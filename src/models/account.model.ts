@@ -2,6 +2,6 @@ export interface Account {
   id: number;
   email: string;
   password: string;
-  role: 'admin' | 'student' | 'teacher' | 'superadmin' | 'parents';
+  role: string;
   created_at: Date;
 }

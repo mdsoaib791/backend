@@ -1,5 +1,5 @@
 export interface UserDTO {
-  id: number;
+  id: string; // UUID
   account_id: number;
   name: string;
   phone?: string;
