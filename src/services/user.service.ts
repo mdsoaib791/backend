@@ -6,6 +6,6 @@ export const getAllUsers = async () => {
 };
 
 export const createUser = userRepo.createUser as (...args: any[]) => Promise<UserDTO>;
-export const getUserById = userRepo.getUserById as (id: number) => Promise<UserDTO | null>;
-export const updateUser = userRepo.updateUser as (...args: any[]) => Promise<UserDTO>;
+export const getUserById = userRepo.getUserById as (id: string) => Promise<UserDTO | null>;
+export const updateUser = userRepo.updateUser as (id: string, name: string, phone?: string, address?: string, dob?: Date) => Promise<UserDTO>;
 export const deleteUser = userRepo.deleteUser;

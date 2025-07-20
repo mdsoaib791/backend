@@ -112,6 +112,7 @@
 
 import { Router } from 'express';
 import { authenticate, authorizeRoles } from '../../middlewares/auth.middleware';
+import { validate } from '../../middlewares/validate.middleware';
 import {
   adminContact,
   getAccountProfile,
@@ -123,10 +124,11 @@ import {
   studentContact,
   superadminContact
 } from '../controllers/account.controller';
+import { accountSchema } from '../validators/account.schema';
 
 const router = Router();
 
-router.post('/register', registerAccount);
+router.post('/register', validate(accountSchema), registerAccount);
 router.post('/login', loginAccount);
 router.post('/logout', logoutAccount);
 router.get('/profile', authenticate, getAccountProfile);

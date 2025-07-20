@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { validate } from '../../middlewares/validate.middleware';
+import { subjectIdSchema, subjectSchema, updateSubjectSchema } from '../../validators/subject.schema';
 import {
   createSubject,
   deleteSubject,
@@ -81,9 +83,9 @@ const router = Router();
  *         description: Subject deleted
  */
 
-router.post('/', createSubject);
-router.get('/:id', getSubjectById);
-router.put('/:id', updateSubject);
-router.delete('/:id', deleteSubject);
+router.post('/', validate(subjectSchema), createSubject);
+router.get('/:id', validate(subjectIdSchema), getSubjectById);
+router.put('/:id', validate(subjectIdSchema), validate(updateSubjectSchema), updateSubject);
+router.delete('/:id', validate(subjectIdSchema), deleteSubject);
 
 export default router;

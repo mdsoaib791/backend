@@ -3,7 +3,7 @@
  * tags:
  *   - name: User
  *     description: User management endpoints
- * /api/user:
+ * /api/users:
  *   post:
  *     tags:
  *       - User
@@ -30,7 +30,7 @@
  *               type: array
  *               items:
  *                 $ref: '#/components/schemas/UserDTO'
- * /api/user/{id}:
+ * /api/users/{id}:
  *   get:
  *     tags:
  *       - User
@@ -85,64 +85,32 @@
  */
 
 import { Router } from "express";
-import { authenticate, authorizeRoles } from "../../middlewares/auth.middleware";
-import {
-  adminContact,
-  getAccountProfile,
-  listAccounts,
-  loginAccount,
-  logoutAccount,
-  parentsContact,
-  registerAccount,
-  studentContact,
-  superadminContact,
-} from "../controllers/account.controller";
-import {
-  createUser,
-  deleteUser,
-  getUserById,
-  updateUser,
-} from "../controllers/user.controller";
+import { authenticate } from "../../middlewares/auth.middleware";
+import { validate } from "../../middlewares/validate.middleware";
+import { createUserSchema, loginSchema, registerSchema, updateUserSchema, userIdSchema } from "../../validators/user.schema";
+import { createUser, deleteUser, getProfile, getUserById, listUsers, login, logout, register, updateUser } from "../controllers/user.controller";
 
 const router = Router();
 
-// Account endpoints
-router.post("/register", registerAccount);
-router.post("/login", loginAccount);
-router.post("/logout", logoutAccount);
-router.get("/profile", authenticate, getAccountProfile);
-router.get("/all", authenticate, authorizeRoles("superadmin"), listAccounts);
 
-// Role-based contact endpoints
-router.get(
-  "/contact/admin",
-  authenticate,
-  authorizeRoles("admin"),
-  adminContact
-);
-router.get(
-  "/contact/student",
-  authenticate,
-  authorizeRoles("student"),
-  studentContact
-);
-router.get(
-  "/contact/superadmin",
-  authenticate,
-  authorizeRoles("superadmin"),
-  superadminContact
-);
-router.get(
-  "/contact/parents",
-  authenticate,
-  authorizeRoles("parents"),
-  parentsContact
-);
+// Register endpoint
+router.post("/register", validate(registerSchema), register);
+// Login endpoint
+router.post("/login", validate(loginSchema), login);
+// Logout endpoint
+router.post("/logout", logout);
+// List users
+router.get("/", listUsers);
+// Get profile
+router.get("/profile", authenticate, getProfile);
 
-// User management endpoints
-router.post("/", createUser);
-router.get("/:id", getUserById);
-router.put("/:id", updateUser);
-router.delete("/:id", deleteUser);
+// Create user
+router.post("/", validate(createUserSchema), createUser);
+// Get user by ID
+router.get("/:id", validate(userIdSchema), getUserById);
+// Update user
+router.put("/:id", validate(userIdSchema), validate(updateUserSchema), updateUser);
+// Delete user
+router.delete("/:id", validate(userIdSchema), deleteUser);
 
 export default router;

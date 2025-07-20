@@ -8,7 +8,14 @@ export const createAttendance = async (req: Request, res: Response) => {
     const attendance: AttendanceDTO = await attendanceService.createAttendance(student_id, date, status);
     res.status(201).json(attendance);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -18,7 +25,14 @@ export const getAttendanceById = async (req: Request, res: Response) => {
     if (!attendance) return res.status(404).json({ message: 'Attendance not found' });
     res.json(attendance);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -28,7 +42,14 @@ export const updateAttendance = async (req: Request, res: Response) => {
     const attendance: AttendanceDTO = await attendanceService.updateAttendance(Number(req.params.id), student_id, date, status);
     res.json(attendance);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -37,6 +58,13 @@ export const deleteAttendance = async (req: Request, res: Response) => {
     await attendanceService.deleteAttendance(Number(req.params.id));
     res.json({ message: 'Attendance deleted' });
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };

@@ -8,7 +8,14 @@ export const createTeacher = async (req: Request, res: Response) => {
     const teacher: TeacherDTO = await teacherService.createTeacher(user_id, subject_id, hire_date);
     res.status(201).json(teacher);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -18,7 +25,14 @@ export const getTeacherById = async (req: Request, res: Response) => {
     if (!teacher) return res.status(404).json({ message: 'Teacher not found' });
     res.json(teacher);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -28,7 +42,14 @@ export const updateTeacher = async (req: Request, res: Response) => {
     const teacher: TeacherDTO = await teacherService.updateTeacher(Number(req.params.id), subject_id, hire_date);
     res.json(teacher);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -37,6 +58,13 @@ export const deleteTeacher = async (req: Request, res: Response) => {
     await teacherService.deleteTeacher(Number(req.params.id));
     res.json({ message: 'Teacher deleted' });
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };

@@ -8,6 +8,7 @@ import studentRoutes from "./api/routes/student.routes";
 import subjectRoutes from "./api/routes/subject.routes";
 import teacherRoutes from "./api/routes/teacher.routes";
 import userRoutes from "./api/routes/user.routes";
+import validationRoutes from "./api/routes/validation.routes";
 import { initDB } from "./config/db";
 import { swaggerUiHandler, swaggerUiSetup } from './swagger';
 
@@ -27,6 +28,7 @@ app.use("/api/class", classRoutes);
 app.use("/api/student", studentRoutes);
 app.use("/api/subject", subjectRoutes);
 app.use("/api/teacher", teacherRoutes);
+app.use("/api/validate", validationRoutes);
 
 app.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`);

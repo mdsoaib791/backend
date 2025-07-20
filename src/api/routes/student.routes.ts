@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { validate } from '../../middlewares/validate.middleware';
+import { studentIdSchema, studentSchema, updateStudentSchema } from '../../validators/student.schema';
 import {
   createStudent,
   deleteStudent,
@@ -81,9 +83,9 @@ const router = Router();
  *         description: Student deleted
  */
 
-router.post('/', createStudent);
-router.get('/:id', getStudentById);
-router.put('/:id', updateStudent);
-router.delete('/:id', deleteStudent);
+router.post('/', validate(studentSchema), createStudent);
+router.get('/:id', validate(studentIdSchema), getStudentById);
+router.put('/:id', validate(studentIdSchema), validate(updateStudentSchema), updateStudent);
+router.delete('/:id', validate(studentIdSchema), deleteStudent);
 
 export default router;

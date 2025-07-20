@@ -9,7 +9,14 @@ export const registerAccount = async (req: Request, res: Response) => {
     const account: AccountDTO = await accountService.registerAccount(email, password, role);
     res.status(201).json(account);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 

@@ -8,7 +8,14 @@ export const createClass = async (req: Request, res: Response) => {
     const classObj: ClassDTO = await classService.createClass(name, section);
     res.status(201).json(classObj);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -18,7 +25,14 @@ export const getClassById = async (req: Request, res: Response) => {
     if (!classObj) return res.status(404).json({ message: 'Class not found' });
     res.json(classObj);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -28,7 +42,14 @@ export const updateClass = async (req: Request, res: Response) => {
     const classObj: ClassDTO = await classService.updateClass(Number(req.params.id), name, section);
     res.json(classObj);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -37,6 +58,13 @@ export const deleteClass = async (req: Request, res: Response) => {
     await classService.deleteClass(Number(req.params.id));
     res.json({ message: 'Class deleted' });
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };

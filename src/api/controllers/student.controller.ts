@@ -8,7 +8,14 @@ export const createStudent = async (req: Request, res: Response) => {
     const student: StudentDTO = await studentService.createStudent(user_id, class_id, roll_number, admission_date);
     res.status(201).json(student);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -18,7 +25,7 @@ export const getStudentById = async (req: Request, res: Response) => {
     if (!student) return res.status(404).json({ message: 'Student not found' });
     res.json(student);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -28,7 +35,14 @@ export const updateStudent = async (req: Request, res: Response) => {
     const student: StudentDTO = await studentService.updateStudent(Number(req.params.id), class_id, roll_number, admission_date);
     res.json(student);
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
+      const errors = err.errors.map((e: any) => ({
+        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
+        message: e.message || 'Validation error'
+      }));
+      return res.status(400).json({ error: 'Validation failed', errors });
+    }
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };
 
@@ -37,6 +51,6 @@ export const deleteStudent = async (req: Request, res: Response) => {
     await studentService.deleteStudent(Number(req.params.id));
     res.json({ message: 'Student deleted' });
   } catch (err: any) {
-    res.status(400).json({ message: err.message });
+    res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 };

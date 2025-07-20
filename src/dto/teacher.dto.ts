@@ -2,5 +2,5 @@ export interface TeacherDTO {
   id: number;
   user_id: string; // UUID
   subject_id: number;
-  hire_date: Date;
+  hire_date: Date | null;
 }

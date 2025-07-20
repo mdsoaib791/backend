@@ -1,0 +1,84 @@
+// Prisma schema reflecting your database tables
+// Save as schema.prisma in the root or a prisma/ folder
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  password   String
+  role       String
+  created_at DateTime @default(now())
+users      User[]
+  @@map("accounts")
+}
+
+model User {
+  id         String   @id @default(uuid())
+  account_id Int
+  name       String
+  phone      String?
+  address    String?
+  dob        DateTime?
+  created_at DateTime @default(now())
+  account    Account  @relation(fields: [account_id], references: [id], onDelete: Cascade)
+  student    Student?
+  teacher    Teacher?
+  @@map("users")
+}
+
+model Class {
+  id         Int      @id @default(autoincrement())
+  name       String
+  section    String?
+  created_at DateTime @default(now())
+  students   Student[]
+  @@map("classes")
+}
+
+model Subject {
+  id         Int      @id @default(autoincrement())
+  name       String
+  code       String
+  created_at DateTime @default(now())
+  teachers   Teacher[]
+  @@map("subjects")
+}
+
+model Student {
+  id            Int      @id @default(autoincrement())
+  user_id       String   @unique
+  class_id      Int
+  roll_number   String
+  admission_date DateTime?
+  user          User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  class         Class    @relation(fields: [class_id], references: [id])
+  attendance    Attendance[]
+  @@map("students")
+}
+
+model Teacher {
+  id         Int      @id @default(autoincrement())
+  user_id    String   @unique
+  subject_id Int
+  hire_date  DateTime?
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  subject    Subject  @relation(fields: [subject_id], references: [id])
+  @@map("teachers")
+}
+
+model Attendance {
+  id         Int      @id @default(autoincrement())
+  student_id Int
+  date       DateTime
+  status     String
+  student    Student  @relation(fields: [student_id], references: [id], onDelete: Cascade)
+  @@map("attendance")
+}
