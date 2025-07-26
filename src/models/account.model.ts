@@ -1,5 +1,6 @@
-export interface Account {
-  id: number;
+export interface AccountModel {
+  id: string;
+  user_id: string;
   email: string;
   password: string;
   role: string;

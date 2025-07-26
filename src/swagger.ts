@@ -5,9 +5,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'School Management API',
+      title: 'Portfolio Builder API',
       version: '1.0.0',
-      description: "API documentation for School Management System",
+      description: "API documentation for Portfolio Builder application",
     },
     servers: [
       { url: 'http://localhost:5000' }
@@ -15,11 +15,6 @@ const options = {
     tags: [
       { name: 'Account', description: 'Account management endpoints' },
       { name: 'User', description: 'User management endpoints' },
-      { name: 'Student', description: 'Student management endpoints' },
-      { name: 'Teacher', description: 'Teacher management endpoints' },
-      { name: 'Class', description: 'Class management endpoints' },
-      { name: 'Subject', description: 'Subject management endpoints' },
-      { name: 'Attendance', description: 'Attendance management endpoints' }
     ],
     components: {
       securitySchemes: {
@@ -30,8 +25,7 @@ const options = {
         }
       },
       schemas: {
-        AccountRegister:
-        {
+        AccountRegister: {
           type: 'object',
           required: ['email', 'password', 'role'],
           properties: {
@@ -49,62 +43,104 @@ const options = {
             created_at: { type: 'string', format: 'date-time' }
           }
         },
-        UserDTO: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer' },
-            account_id: { type: 'integer' },
-            name: { type: 'string' },
-            phone: { type: 'string' },
-            address: { type: 'string' },
-            dob: { type: 'string', format: 'date' },
-            created_at: { type: 'string', format: 'date-time' }
-          }
-        },
-        StudentDTO: {
+        ContactDTO: {
           type: 'object',
           properties: {
             id: { type: 'integer' },
             user_id: { type: 'integer' },
-            class_id: { type: 'integer' },
-            roll_number: { type: 'string' },
-            admission_date: { type: 'string', format: 'date' }
+            name: { type: 'string' },
+            email: { type: 'string' },
+            subject: { type: 'string' },
+            message: { type: 'string' },
+            created_at: { type: 'string', format: 'date-time' }
           }
         },
-        TeacherDTO: {
+        ExperienceDTO: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            company: { type: 'string' },
+            position: { type: 'string' },
+            description: { type: 'string' },
+            start_date: { type: 'string', format: 'date' },
+            end_date: { type: 'string', format: 'date', nullable: true }
+          }
+        },
+        ProfileDTO: {
           type: 'object',
           properties: {
             id: { type: 'integer' },
             user_id: { type: 'integer' },
-            subject_id: { type: 'integer' },
-            hire_date: { type: 'string', format: 'date' }
+            full_name: { type: 'string' },
+            title: { type: 'string' },
+            bio: { type: 'string', nullable: true },
+            profile_picture: { type: 'string', nullable: true }
           }
         },
-        ClassDTO: {
+        ProjectDTO: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            title: { type: 'string' },
+            description: { type: 'string' },
+            tech_stack: {
+              type: 'array',
+              items: { type: 'string' }
+            },
+            github_url: { type: 'string', nullable: true },
+            live_url: { type: 'string', nullable: true },
+            thumbnail: { type: 'string', nullable: true }
+          }
+        },
+        SkillDTO: {
           type: 'object',
           properties: {
             id: { type: 'integer' },
             name: { type: 'string' },
-            section: { type: 'string' },
-            created_at: { type: 'string', format: 'date-time' }
+            category: { type: 'string' },
+            icon_url: { type: 'string' }
+          }
+        }
+      },
+      responses: {
+        UnauthorizedError: {
+          description: 'Unauthorized',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' }
+                }
+              }
+            }
           }
         },
-        SubjectDTO: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer' },
-            name: { type: 'string' },
-            code: { type: 'string' },
-            created_at: { type: 'string', format: 'date-time' }
+        NotFoundError: {
+          description: 'Not Found',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' }
+                }
+              }
+            }
           }
         },
-        AttendanceDTO: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer' },
-            student_id: { type: 'integer' },
-            date: { type: 'string', format: 'date' },
-            status: { type: 'string' }
+        ValidationError: {
+          description: 'Validation Error',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  message: { type: 'string' },
+                  errors: { type: 'array', items: { type: 'string' } }
+                }
+              }
+            }
           }
         }
       }
@@ -113,7 +149,7 @@ const options = {
       { bearerAuth: [] }
     ]
   },
-  apis: ['./src/api/routes/*.ts'],
+  apis: ['./src/api/routes/*.ts', './src/api/controllers/*.ts'],
 };
 
 export const swaggerSpec = swaggerJSDoc(options);

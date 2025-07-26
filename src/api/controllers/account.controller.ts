@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { ZodError } from "zod";
 import { AccountDTO } from "../../dto/account.dto";
 import { AuthRequest } from "../../middlewares/auth.middleware";
 import * as accountService from "../../services/account.service";
@@ -9,10 +10,10 @@ export const registerAccount = async (req: Request, res: Response) => {
     const account: AccountDTO = await accountService.registerAccount(email, password, role);
     res.status(201).json(account);
   } catch (err: any) {
-    if (err && err.name === 'ZodError' && Array.isArray(err.errors)) {
-      const errors = err.errors.map((e: any) => ({
-        field: Array.isArray(e.path) ? e.path.join('.') : String(e.path),
-        message: e.message || 'Validation error'
+    if (err instanceof ZodError) {
+      const errors = err.issues.map((e) => ({
+        field: e.path.join('.'),
+        message: e.message
       }));
       return res.status(400).json({ error: 'Validation failed', errors });
     }

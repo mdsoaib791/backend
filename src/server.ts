@@ -1,16 +1,17 @@
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import express from "express";
-import accountRoutes from "./api/routes/account.routes";
-import attendanceRoutes from "./api/routes/attendance.routes";
-import classRoutes from "./api/routes/class.routes";
-import studentRoutes from "./api/routes/student.routes";
-import subjectRoutes from "./api/routes/subject.routes";
-import teacherRoutes from "./api/routes/teacher.routes";
-import userRoutes from "./api/routes/user.routes";
-import validationRoutes from "./api/routes/validation.routes";
 import { initDB } from "./config/db";
-import { swaggerUiHandler, swaggerUiSetup } from './swagger';
+import { swaggerUiHandler, swaggerUiSetup } from "./swagger";
+
+// Routes
+import accountRoutes from "./api/routes/account.routes";
+import contactRoutes from "./api/routes/contact.routes";
+import experienceRoutes from "./api/routes/experience.routes";
+import profileRoutes from "./api/routes/profile.routes";
+import projectRoutes from "./api/routes/project.routes";
+import skillRoutes from "./api/routes/skill.routes";
+import validationRoutes from "./api/routes/validation.routes";
 
 dotenv.config();
 
@@ -19,18 +20,26 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cookieParser());
-app.use('/api-docs', swaggerUiHandler, swaggerUiSetup);
-// Routes
-app.use("/api/users", userRoutes);
+
+// Swagger UI
+app.use("/api-docs", swaggerUiHandler, swaggerUiSetup);
+
+// Register routes
 app.use("/api/account", accountRoutes);
-app.use("/api/attendance", attendanceRoutes);
-app.use("/api/class", classRoutes);
-app.use("/api/student", studentRoutes);
-app.use("/api/subject", subjectRoutes);
-app.use("/api/teacher", teacherRoutes);
+app.use("/api/profile", profileRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/experience", experienceRoutes);
+app.use("/api/project", projectRoutes);
+app.use("/api/skill", skillRoutes);
 app.use("/api/validate", validationRoutes);
 
 app.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`);
   await initDB();
 });
+
+// 404 route
+app.use((req, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
