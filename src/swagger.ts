@@ -14,7 +14,7 @@ const options = {
     ],
     tags: [
       { name: 'Account', description: 'Account management endpoints' },
-      { name: 'User', description: 'User management endpoints' },
+
     ],
     components: {
       securitySchemes: {
@@ -47,25 +47,15 @@ const options = {
           type: 'object',
           properties: {
             id: { type: 'integer' },
-            user_id: { type: 'integer' },
-            name: { type: 'string' },
+            user_id: { type: 'string' },
+            full_name: { type: 'string' },
             email: { type: 'string' },
             subject: { type: 'string' },
             message: { type: 'string' },
             created_at: { type: 'string', format: 'date-time' }
           }
         },
-        ExperienceDTO: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer' },
-            company: { type: 'string' },
-            position: { type: 'string' },
-            description: { type: 'string' },
-            start_date: { type: 'string', format: 'date' },
-            end_date: { type: 'string', format: 'date', nullable: true }
-          }
-        },
+
         ProfileDTO: {
           type: 'object',
           properties: {
@@ -77,30 +67,6 @@ const options = {
             profile_picture: { type: 'string', nullable: true }
           }
         },
-        ProjectDTO: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer' },
-            title: { type: 'string' },
-            description: { type: 'string' },
-            tech_stack: {
-              type: 'array',
-              items: { type: 'string' }
-            },
-            github_url: { type: 'string', nullable: true },
-            live_url: { type: 'string', nullable: true },
-            thumbnail: { type: 'string', nullable: true }
-          }
-        },
-        SkillDTO: {
-          type: 'object',
-          properties: {
-            id: { type: 'integer' },
-            name: { type: 'string' },
-            category: { type: 'string' },
-            icon_url: { type: 'string' }
-          }
-        }
       },
       responses: {
         UnauthorizedError: {

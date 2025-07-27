@@ -19,36 +19,28 @@ export const getAllProfiles = async (_req: Request, res: Response) => {
 };
 
 export const getProfileById = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const numericId = Number(id);
+  const id = Number(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ message: "Invalid profile ID" });
 
-  if (isNaN(numericId)) {
-    return res.status(400).json({ message: "Invalid profile ID" });
-  }
-
-  const profile = await profileService.getProfileById(numericId);
-  if (!profile) {
-    return res.status(404).json({ message: "Profile not found" });
-  }
+  const profile = await profileService.getProfileById(id);
+  if (!profile) return res.status(404).json({ message: "Profile not found" });
 
   res.json(profile);
 };
 
 export const updateProfile = async (req: Request, res: Response) => {
-  const { id } = req.params;
+  const id = Number(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ message: "Invalid profile ID" });
+
   const { full_name, title, bio, profile_picture } = req.body;
-  const updated = await profileService.updateProfile(
-    id,
-    full_name,
-    title,
-    bio,
-    profile_picture
-  );
+  const updated = await profileService.updateProfile(id, full_name, title, bio, profile_picture);
   res.json(updated);
 };
 
 export const deleteProfile = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  await profileService.deleteProfile(Number(id));
+  const id = Number(req.params.id);
+  if (isNaN(id)) return res.status(400).json({ message: "Invalid profile ID" });
+
+  await profileService.deleteProfile(id);
   res.json({ message: "Profile deleted" });
 };

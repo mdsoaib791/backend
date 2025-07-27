@@ -3,7 +3,7 @@ import prisma from "../config/prisma";
 import { ContactModel } from "../models/contact.model";
 
 export const createContact = async (
-  user_id: number,
+  user_id: string,
   full_name: string,
   email: string,
   subject: string,

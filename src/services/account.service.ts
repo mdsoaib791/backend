@@ -16,13 +16,13 @@ export const loginAccount = async (email: string, password: string) => {
   if (!isMatch) throw new Error('Invalid credentials');
 
   const accessToken = jwt.sign(
-    { accountId: account.id, role: account.role },
+    { accountId: account.user_id, role: account.role },
     process.env.JWT_SECRET as string,
     { expiresIn: '15m' }
   );
 
   const refreshToken = jwt.sign(
-    { accountId: account.id, role: account.role },
+    { accountId: account.user_id, role: account.role },
     process.env.JWT_SECRET as string,
     { expiresIn: '7d' }
   );

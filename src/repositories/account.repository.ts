@@ -20,7 +20,7 @@ export const createAccount = async (
       email,
       password: hashedPassword,
       role,
-      user_id, // ✅ new field added
+      user_id,
     },
   });
 };

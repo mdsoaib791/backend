@@ -1,14 +1,33 @@
 import { Request, Response } from "express";
+import { AuthRequest } from "../../middlewares/auth.middleware";
 import * as contactService from "../../services/contact.service";
 
 // Create a new contact
-export const createContact = async (req: Request, res: Response) => {
+export const createContact = async (req: AuthRequest, res: Response) => {
   try {
+    const user_id = req.user?.userId;
+
+    if (!user_id) {
+      return res.status(401).json({ error: "Unauthorized: User ID not found" });
+    }
+
     const { full_name, email, subject, message } = req.body;
-    const contact = await contactService.createContact(full_name, email, subject, message);
+
+    const contact = await contactService.createContact(
+      user_id.toString(), // Prisma expects `string` if your DB column is String
+      full_name,
+      email,
+      subject,
+      message
+    );
+
     res.status(201).json(contact);
   } catch (error) {
-    res.status(500).json({ error: "Failed to create contact" });
+    console.error("Create contact failed:", error);
+    res.status(500).json({
+      error: "Failed to create contact",
+      message: error instanceof Error ? error.message : String(error),
+    });
   }
 };
 

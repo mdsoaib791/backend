@@ -6,8 +6,21 @@ export const getAllProfiles = async (): Promise<ProfileDTO[]> => {
 };
 
 export const createProfile = profileRepo.createProfile as (...args: any[]) => Promise<ProfileDTO>;
+ 
 export const getProfileById = (id: number): Promise<ProfileDTO | null> => {
   return profileRepo.getProfileById(id);
 };
-export const updateProfile = profileRepo.updateProfile as (...args: any[]) => Promise<ProfileDTO>;
-export const deleteProfile = profileRepo.deleteProfile;
+
+export const updateProfile = (
+  id: number,
+  full_name: string,
+  title: string,
+  bio?: string,
+  profile_picture?: string
+): Promise<ProfileDTO> => {
+  return profileRepo.updateProfile(id, full_name, title, bio, profile_picture);
+};
+
+export const deleteProfile = (id: number): Promise<void> => {
+  return profileRepo.deleteProfile(id);
+};
