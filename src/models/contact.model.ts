@@ -1,9 +1,13 @@
 export interface ContactModel {
   id: number;
-  user_id: string;
-  full_name: string;
-  email: string;
-  subject: string;
-  message: string;
-  created_at: Date;
+  userId: string;
+  phone: string | null;
+  alternatePhone: string | null;
+  address: string | null;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  zipCode: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }

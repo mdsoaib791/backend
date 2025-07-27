@@ -18,25 +18,38 @@
  *         description: Profile created
  *   get:
  *     tags: [Profile]
- *     summary: Get profile by account ID
- *     parameters:
- *       - in: query
- *         name: user_id
- *         required: true
- *         schema:
- *           type: string
+ *     summary: Get all profiles
  *     responses:
  *       200:
- *         description: Profile data
+ *         description: All profiles
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ProfileDTO'
+ * /api/profile/{id}:
+ *   get:
+ *     tags: [Profile]
+ *     summary: Get a profile by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Profile found
  *   put:
  *     tags: [Profile]
- *     summary: Update profile
+ *     summary: Update a profile by ID
  *     parameters:
- *       - in: query
- *         name: user_id
- *         required: true
+ *       - in: path
+ *         name: id
  *         schema:
- *           type: string
+ *           type: integer
+ *         required: true
  *     requestBody:
  *       required: true
  *       content:
@@ -45,14 +58,26 @@
  *             $ref: '#/components/schemas/ProfileDTO'
  *     responses:
  *       200:
- *         description: Updated profile
+ *         description: Profile updated
+ *   delete:
+ *     tags: [Profile]
+ *     summary: Delete a profile by ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Profile deleted
  */
-
 import { Router } from "express";
 import { validate } from "../../middlewares/validate.middleware";
-
 import {
   createProfile,
+  deleteProfile,
+  getAllProfiles,
   getProfileById,
   updateProfile,
 } from "../controllers/profile.controller";
@@ -61,7 +86,9 @@ import { profileSchema } from "../validators/profile.schema";
 const router = Router();
 
 router.post("/", validate(profileSchema), createProfile);
-router.get("/", getProfileById);
-router.put("/", validate(profileSchema), updateProfile);
+router.get("/", getAllProfiles);
+router.get("/:id", getProfileById);
+router.put("/:id", validate(profileSchema), updateProfile);
+router.delete("/:id", deleteProfile);
 
 export default router;

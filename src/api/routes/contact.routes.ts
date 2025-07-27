@@ -2,12 +2,11 @@
  * @swagger
  * tags:
  *   - name: Contact
- *     description: Contact form submissions
+ *     description: Contact information management
  * /api/contacts:
  *   post:
- *     tags:
- *       - Contact
- *     summary: Submit contact form
+ *     tags: [Contact]
+ *     summary: Create contact info (requires authentication)
  *     requestBody:
  *       required: true
  *       content:
@@ -18,9 +17,8 @@
  *       201:
  *         description: Contact created
  *   get:
- *     tags:
- *       - Contact
- *     summary: Get all contacts
+ *     tags: [Contact]
+ *     summary: Get all contacts (admin-only)
  *     responses:
  *       200:
  *         description: List of contacts
@@ -32,9 +30,8 @@
  *                 $ref: '#/components/schemas/ContactDTO'
  * /api/contacts/{id}:
  *   get:
- *     tags:
- *       - Contact
- *     summary: Get a contact by ID
+ *     tags: [Contact]
+ *     summary: Get contact by ID
  *     parameters:
  *       - in: path
  *         name: id
@@ -51,9 +48,8 @@
  *       404:
  *         description: Contact not found
  *   delete:
- *     tags:
- *       - Contact
- *     summary: Delete a contact by ID
+ *     tags: [Contact]
+ *     summary: Delete contact by ID
  *     parameters:
  *       - in: path
  *         name: id
@@ -66,21 +62,21 @@
  */
 
 import { Router } from "express";
+import { authenticate } from "../../middlewares/auth.middleware";
 import { validate } from "../../middlewares/validate.middleware";
-
 import {
   createContact,
   deleteContact,
   getAllContacts,
-  getContactById
+  getContactById,
 } from "../controllers/contact.controller";
 import { contactSchema } from "../validators/contact.schema";
 
 const router = Router();
 
-router.post("/", validate(contactSchema), createContact);
-router.get("/", getAllContacts);
-router.get("/:id", getContactById);
-router.delete("/:id", deleteContact);
+router.post("/", authenticate, validate(contactSchema), createContact);
+router.get("/", authenticate, getAllContacts);
+router.get("/:id", authenticate, getContactById);
+router.delete("/:id", authenticate, deleteContact);
 
 export default router;

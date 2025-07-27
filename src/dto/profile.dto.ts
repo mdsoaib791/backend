@@ -1,10 +1,12 @@
 export interface ProfileDTO {
   id: number;
-  user_id: string;
-  full_name: string;
-  title: string;
+  userId: string;
+  firstName: string | null;
+  lastName: string | null;
+  dateOfBirth: Date | null;
+  gender: string | null;
   bio: string | null;
-  profile_picture?: string | null;
-  created_at: Date;
-  updated_at: Date;
+  avatarUrl: string | null;
+  createdAt: Date;
+  updatedAt: Date;
 }

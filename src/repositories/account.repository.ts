@@ -1,6 +1,5 @@
 import prisma from '../config/prisma';
 import { AccountModel } from '../models/account.model';
-import { v4 as uuidv4 } from 'uuid';
 
 export const findByEmail = async (email: string): Promise<AccountModel | null> => {
   return await prisma.account.findUnique({
@@ -13,18 +12,37 @@ export const createAccount = async (
   hashedPassword: string,
   role: string
 ): Promise<AccountModel> => {
-  const user_id = uuidv4(); // Generate a unique user_id for API usage
-
   return await prisma.account.create({
     data: {
       email,
       password: hashedPassword,
       role,
-      user_id,
     },
   });
 };
 
 export const getAllAccounts = async (): Promise<AccountModel[]> => {
   return await prisma.account.findMany();
+};
+
+export const findById = async (userId: string): Promise<AccountModel | null> => {
+  return await prisma.account.findUnique({
+    where: { userId },
+  });
+};
+
+export const deleteAccount = async (userId: string): Promise<AccountModel> => {
+  return await prisma.account.delete({
+    where: { userId },
+  });
+};
+
+export const updateAccount = async (
+  userId: string,
+  data: Partial<Omit<AccountModel, 'userId' | 'createdAt' | 'updatedAt'>>
+): Promise<AccountModel> => {
+  return await prisma.account.update({
+    where: { userId },
+    data,
+  });
 };

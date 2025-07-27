@@ -1,21 +1,14 @@
 import prisma from "../config/prisma";
-
 import { ContactModel } from "../models/contact.model";
 
 export const createContact = async (
-  user_id: string,
-  full_name: string,
-  email: string,
-  subject: string,
-  message: string
+  userId: string,
+  contactData: Omit<ContactModel, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
 ): Promise<ContactModel> => {
   return await prisma.contact.create({
     data: {
-      user_id,
-      full_name,
-      email,
-      subject,
-      message,
+      userId,
+      ...contactData,
     },
   });
 };
@@ -23,15 +16,29 @@ export const createContact = async (
 export const getAllContacts = async (): Promise<ContactModel[]> => {
   return await prisma.contact.findMany({
     include: {
-      account: true, // if you want account info
+      account: true, // if you want related account info
     },
   });
 };
 
 export const getContactById = async (id: number): Promise<ContactModel | null> => {
-  return await prisma.contact.findUnique({ where: { id } });
+  return await prisma.contact.findUnique({
+    where: { id },
+  });
+};
+
+export const updateContactById = async (
+  id: number,
+  data: Partial<Omit<ContactModel, 'id' | 'userId' | 'createdAt' | 'updatedAt'>>
+): Promise<ContactModel> => {
+  return await prisma.contact.update({
+    where: { id },
+    data,
+  });
 };
 
 export const deleteContactById = async (id: number): Promise<void> => {
-  await prisma.contact.delete({ where: { id } });
+  await prisma.contact.delete({
+    where: { id },
+  });
 };

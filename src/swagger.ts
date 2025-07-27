@@ -14,7 +14,8 @@ const options = {
     ],
     tags: [
       { name: 'Account', description: 'Account management endpoints' },
-
+      { name: 'Contact', description: 'Contact form submissions' },
+      { name: 'Profile', description: 'Portfolio profile management' }
     ],
     components: {
       securitySchemes: {
@@ -40,31 +41,37 @@ const options = {
             id: { type: 'integer' },
             email: { type: 'string' },
             role: { type: 'string' },
-            created_at: { type: 'string', format: 'date-time' }
+            createdAt: { type: 'string', format: 'date-time' }
           }
         },
         ContactDTO: {
           type: 'object',
           properties: {
-            id: { type: 'integer' },
-            user_id: { type: 'string' },
-            full_name: { type: 'string' },
-            email: { type: 'string' },
-            subject: { type: 'string' },
-            message: { type: 'string' },
-            created_at: { type: 'string', format: 'date-time' }
+            userId: { type: 'string' },
+            phone: { type: 'string', nullable: true },
+            alternatePhone: { type: 'string', nullable: true },
+            address: { type: 'string', nullable: true },
+            city: { type: 'string', nullable: true },
+            state: { type: 'string', nullable: true },
+            country: { type: 'string', nullable: true },
+            zipCode: { type: 'string', nullable: true },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
           }
         },
-
         ProfileDTO: {
           type: 'object',
           properties: {
             id: { type: 'integer' },
-            user_id: { type: 'integer' },
-            full_name: { type: 'string' },
-            title: { type: 'string' },
+            userId: { type: 'string' },
+            firstName: { type: 'string', nullable: true },
+            lastName: { type: 'string', nullable: true },
+            dateOfBirth: { type: 'string', format: 'date', nullable: true },
+            gender: { type: 'string', nullable: true },
             bio: { type: 'string', nullable: true },
-            profile_picture: { type: 'string', nullable: true }
+            avatarUrl: { type: 'string', nullable: true },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' }
           }
         },
       },

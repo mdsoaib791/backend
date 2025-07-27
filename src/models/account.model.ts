@@ -1,8 +1,8 @@
 export interface AccountModel {
-  user_id: string;
+  userId: string;
   email: string;
   password: string;
   role: string;
-  created_at: Date;
-  updated_at: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

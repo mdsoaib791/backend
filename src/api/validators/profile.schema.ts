@@ -1,9 +1,11 @@
 import { z } from "zod";
 
 export const profileSchema = z.object({
-  user_id: z.string(),
-  full_name: z.string().min(3),
-  title: z.string(),
-  bio: z.string().optional(),
-  profile_picture: z.string().url().optional()
+  userId: z.string(),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  dateOfBirth: z.coerce.date().nullable().optional(),
+  gender: z.enum(["male", "female", "other"]).nullable().optional(),
+  bio: z.string().nullable().optional(),
+  avatarUrl: z.string().url("Invalid URL").nullable().optional(),
 });

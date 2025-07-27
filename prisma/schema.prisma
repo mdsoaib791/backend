@@ -6,95 +6,45 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
 model Account {
-  id        Int     @id @default(autoincrement())
-  user_id   String  @unique @default(uuid()) // ✅ Keep this if you want UUID as a public identifier
-  email     String  @unique
-  password  String
-  role      String  @default("user")
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  userId     String    @id @default(uuid())
+  email      String    @unique
+  password   String
+  role       String    @default("user")
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 
-  profile     Profile?
-  projects    Project[]
-  experiences Experience[]
-  skills      Skill[]
-  contacts    Contact[]
-
-  @@map("accounts")
-}
-
-
-model Profile {
-  id              Int      @id @default(autoincrement())
-  user_id         String   @unique
-  full_name       String
-  title           String
-  bio             String?
-  profile_picture String?
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
-
-  account Account @relation(fields: [user_id], references: [user_id])
-
-  @@map("profiles")
-}
-
-model Skill {
-  id         Int      @id @default(autoincrement())
-  user_id    String
-  name       String
-  category   String
-  icon_url   String
-  created_at DateTime @default(now())
-
-  account Account @relation(fields: [user_id], references: [user_id])
-
-  @@map("skills")
-}
-
-model Project {
-  id          Int      @id @default(autoincrement())
-  user_id     String
-  title       String
-  description String
-  tech_stack  String[]
-  github_url  String?
-  live_url    String?
-  thumbnail   String?
-  created_at  DateTime @default(now())
-
-  account Account @relation(fields: [user_id], references: [user_id])
-
-  @@map("projects")
-}
-
-model Experience {
-  id          Int      @id @default(autoincrement())
-  user_id     String
-  company     String
-  position    String
-  description String
-  start_date  DateTime
-  end_date    DateTime?
-  created_at  DateTime @default(now())
-
-  account Account @relation(fields: [user_id], references: [user_id])
-
-  @@map("experiences")
+  contact    Contact?
+  profile    Profile?
 }
 
 model Contact {
-  id         Int      @id @default(autoincrement())
-  user_id    String
-  full_name  String
-  email      String
-  subject    String
-  message    String
-  created_at DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  userId          String   @unique
+  phone           String?  // <-- updated
+  alternatePhone  String?  // <-- updated
+  address         String?
+  city            String?
+  state           String?
+  country         String?
+  zipCode         String?  // <-- updated
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
-  account Account @relation(fields: [user_id], references: [user_id])
+  account         Account  @relation(fields: [userId], references: [userId], onDelete: Cascade)
+}
 
-  @@map("contacts")
+model Profile {
+  id           Int      @id @default(autoincrement())
+  userId       String   @unique
+  firstName    String?
+  lastName     String?
+  dateOfBirth  DateTime?
+  gender       String?
+  bio          String?
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  account      Account  @relation(fields: [userId], references: [userId], onDelete: Cascade)
 }
