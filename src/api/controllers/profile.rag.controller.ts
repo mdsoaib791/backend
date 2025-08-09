@@ -11,12 +11,12 @@ export const generateProfileAI = async (req: Request, res: Response) => {
     return res.status(400).json({ error: 'Validation failed', details: parseResult.error.issues });
   }
 
-  const userId = (req as any).user?.userId; // You can define `AuthRequest` to avoid "any"
+  const userId = (req as any).user?.userId;
   const prompt = parseResult.data.prompt;
 
   try {
-    const profile = await service.generateProfileFromPrompt(prompt, userId);
-    return res.status(200).json(profile);
+    const { profile, contact } = await service.generateProfileAndContactFromPrompt(prompt, userId);
+    return res.status(200).json({ profile, contact });
   } catch (error) {
     console.error("AI generation error:", error);
     return res.status(500).json({ error: "AI generation failed" });
